@@ -44,6 +44,10 @@ body {
     padding: 48px;
   }
 
+  .comment:hover {
+    cursor: pointer;
+  }
+
   .comment-header {
     font-size: 16px;
     display: flex;
@@ -62,6 +66,7 @@ body {
 
   .comment-text {
     font-size: 32px;
+    white-space: pre-line;
   }
 
   .likes {
@@ -85,6 +90,11 @@ body {
     background-repeat: no-repeat;
     width: 22px;
     height: 22px;
+    transition: all 0.3s;
+  }
+
+  .like-button:hover {
+    transform: scale(1.1);
   }
 
   .-active-like {
@@ -131,10 +141,11 @@ body {
     border: none;
     border-radius: 18px;
     cursor: pointer;
+    transition: all 0.3s;
   }
 
   .add-form-button:hover {
-    opacity: 0.9;
+    opacity: 0.8;
   }
 
   .delete-form-button {
@@ -145,22 +156,31 @@ body {
     border: none;
     border-radius: 18px;
     cursor: pointer;
+    transition: all 0.3s;
   }
 
   .delete-form-button:hover {
-    opacity: 0.9;
+    opacity: 0.8;
   }
 
   .edit-form-button {
-    margin-top: 24px;
-    font-size: 24px;
+    font-size: 26px;
     padding: 10px 20px 10px 10px;
-    background-color: #bcec30;
-    border: none;
+    background-color: transparent;
+    border: 1px solid;
+    border-color: #bcec30;
     border-radius: 18px;
     cursor: pointer;
+    color: #ffffff;
+    margin-right: 15px;
+    transition: all 0.3s;
   }
 
   .edit-form-button:hover {
-    opacity: 0.9;
+    background-color: #bcec30;
+    color: #202020;
+  }
+
+  .error {
+    background-color: #b81414;
   }

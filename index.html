@@ -16,7 +16,7 @@
         oninput=""></textarea>
       <div class="add-form-row">
         <button class="add-form-button">Написать</button>
-        <button class="delete-form-button">Удалить последний <br> комментарий</button>
+        <button class="delete-form-button">Удалить</button>
       </div>
     </div>
   </div>
@@ -36,7 +36,7 @@
   // Переменные
   const addButtonElement = document.querySelector(".add-form-button");
   const deleteButtonElement = document.querySelector(".delete-form-button");
-  let comments = document.querySelector(".comments");
+  const comments = document.querySelector(".comments");
   const nameInput = document.querySelector(".add-form-name");
   const commentInput = document.querySelector(".add-form-text");
 
@@ -105,26 +105,43 @@
   const renderComment = () => {
     const commentsHTML = comment
       .map((comment, index) => {
-        return `<li class="comment">
-        <div class="comment-header">
-          <div>${comment.name}</div>
-          <div>${comment.time}</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            ${comment.text}
+        return `<li class="comment" data-index="${index}">
+          <div class="comment-header">
+            <div>${comment.name}</div>
+            <div>${comment.time}</div>
           </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">${comment.likes}</span>
-            <button class="like-button ${comment.isLiked ? '-active-like' : ''}" data-index="${index}"></button>
+          <div class="comment-body">
+            <div class="comment-text">
+              ${comment.text}
+            </div>
           </div>
-        </div>
-      </li>`;
+          <div class="comment-footer">
+            <button class="edit-form-button" data-index="${index}">Редактировать</button>
+            <div class="likes">
+              <span class="likes-counter">${comment.likes}</span>
+              <button class="like-button ${comment.isLiked ? '-active-like' : ''}" data-index="${index}"></button>
+            </div>
+          </div>
+        </li>`;
       })
       .join('');
     comments.innerHTML = commentsHTML;
+
+
+    //Редактировать комментарий
+
+
+    // Ответ на комменатрий
+    const pushedComments = document.querySelectorAll('.comment');
+    for (const repliedComment of pushedComments) {
+      const index = repliedComment.dataset.index;
+
+      repliedComment.addEventListener('click', () => {
+        commentInput.value = '>' + ' ' + comment[index].text + '\n' + '\n' + comment[index].name + ',';
+        commentInput.focus();
+      });
+    }
+
     initEventListeners();
   };
   renderComment();
@@ -132,30 +149,49 @@
   // Добавление комментария
   const pushComment = () => {
     addButtonElement.classList.remove('disabled');
-    if (nameInput.value === '' || commentInput.value === '') {
+    nameInput.classList.remove('error');
+    commentInput.classList.remove('error');
+
+    if (nameInput.value === '' && commentInput.value === '') {
+      nameInput.classList.add('error');
+      commentInput.classList.add('error');
       addButtonElement.classList.add('disabled');
       return;
     };
 
+    if (nameInput.value === '') {
+      nameInput.classList.add('error');
+      addButtonElement.classList.add('disabled');
+      return;
+    };
+
+    if (commentInput.value === '') {
+      commentInput.classList.add('error');
+      addButtonElement.classList.add('disabled');
+      return;
+    };
+
+    const safeNameInputValue = nameInput.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
+    const safeCommentInputValue = commentInput.value
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+
     comment.push({
-      name: nameInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;"),
-      text: commentInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll("&", "&amp;")
-        .replaceAll('"', "&quot;"),
+      name: safeNameInputValue,
+      text: safeCommentInputValue,
       likes: 0,
       time: commentTime(),
     });
 
     nameInput.value = '';
     commentInput.value = '';
-    renderComment();
     initEventListeners();
+    renderComment();
   };
 
   // Обработчик на кнопке 'Написать'
@@ -170,7 +206,7 @@
 
   // Удаление последнего комментария
   deleteButtonElement.addEventListener('click', () => {
-    comment.pop();
+    const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
     renderComment();
   });
 
