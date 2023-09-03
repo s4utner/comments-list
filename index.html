@@ -45,6 +45,7 @@
     {
       name: 'Глеб Фокин',
       text: 'Это будет первый комментарий на этой странице',
+      isEdit: false,
       likes: 3,
       isLiked: false,
       time: '12.02.22 12:18',
@@ -52,6 +53,7 @@
     {
       name: 'Варвара Н.',
       text: 'Мне нравится как оформлена эта страница! ❤',
+      isEdit: false,
       likes: 75,
       isLiked: true,
       time: '13.02.22 19:22',
@@ -111,7 +113,7 @@
             <div>${comment.time}</div>
           </div>
           <div class="comment-body">
-            <div class="comment-text">
+            <div class="comment-text ${comment.isEdit ? comment.text = `<textarea type="textarea" class="add-form-text" value="${comment.text}" rows="4" oninput=""></textarea>` : false}" data-index="${index}">
               ${comment.text}
             </div>
           </div>
@@ -127,12 +129,22 @@
       .join('');
     comments.innerHTML = commentsHTML;
 
-
     //Редактировать комментарий
+    const editButtonElements = document.querySelectorAll('.edit-form-button');
 
+    for (const editButton of editButtonElements) {
+      const index = editButton.dataset.index;
+      const commentTextElements = document.querySelectorAll('.comment-text');
+
+      editButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        comment[index].isEdit = true;
+      });
+    };
 
     // Ответ на комменатрий
     const pushedComments = document.querySelectorAll('.comment');
+
     for (const repliedComment of pushedComments) {
       const index = repliedComment.dataset.index;
 
