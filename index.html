@@ -40,11 +40,14 @@
   const nameInput = document.querySelector(".add-form-name");
   const commentInput = document.querySelector(".add-form-text");
 
-  // Список комментариев 
+  let quoteGlobal = "";
+
+  // Список комментариев
   let comment = [
     {
       name: 'Глеб Фокин',
       text: 'Это будет первый комментарий на этой странице',
+      quote: "",
       isEdit: false,
       likes: 3,
       isLiked: false,
@@ -53,6 +56,7 @@
     {
       name: 'Варвара Н.',
       text: 'Мне нравится как оформлена эта страница! ❤',
+      quote: "",
       isEdit: false,
       likes: 75,
       isLiked: true,
@@ -112,13 +116,27 @@
             <div>${comment.name}</div>
             <div>${comment.time}</div>
           </div>
-          <div class="comment-body">
-            <div class="comment-text ${comment.isEdit ? comment.text = `<textarea type="textarea" class="add-form-text" value="${comment.text}" rows="4" oninput=""></textarea>` : false}" data-index="${index}">
-              ${comment.text}
-            </div>
-          </div>
+          ${comment.quote
+            ? `<div
+                        class="quote-form-text"
+                        rows="2"
+                        >${comment.quote}</div>`
+            : ``
+          }
+
+          ${comment.isEdit
+            ? `<textarea
+                        class="add-form-text"
+                        rows="2"
+                      >${comment.text}</textarea>`
+            : `<div class="comment-body"><div class="comment-text" data-index="${index}">${comment.text}</div></div>`
+          }
+
           <div class="comment-footer">
-            <button class="edit-form-button" data-index="${index}">Редактировать</button>
+                          ${comment.isEdit
+            ? `<button data-index="${index}" class='save-form-button'>Сохранить изменения</button>`
+            : `<button data-index="${index}" class='edit-form-button'>Редактировать комментарий</button>`
+          }
             <div class="likes">
               <span class="likes-counter">${comment.likes}</span>
               <button class="like-button ${comment.isLiked ? '-active-like' : ''}" data-index="${index}"></button>
@@ -133,24 +151,53 @@
     const editButtonElements = document.querySelectorAll('.edit-form-button');
 
     for (const editButton of editButtonElements) {
-      const index = editButton.dataset.index;
-      const commentTextElements = document.querySelectorAll('.comment-text');
 
       editButton.addEventListener('click', (event) => {
         event.stopPropagation();
-        comment[index].isEdit = true;
+        const index = editButton.dataset.index;
+        const editComment = comment[index];
+        editComment.isEdit = true;
+
+        renderComment();
+
+        document.querySelector(".add-form-text").focus();
       });
     };
+    const saveButtons = document.querySelectorAll(".save-form-button");
+    for (const saveButton of saveButtons) {
+      saveButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const saveComment = comment[saveButton.dataset.index];
+        const editFormText = saveButton
+          .closest(".comment")
+          .querySelector(".add-form-text");
+        saveComment.text = editFormText.value;
+
+        saveComment.isEdit = false;
+        renderComment();
+      });
+    }
+
+    //блокировка кнопки
+    addButtonElement.classList.add('disabled');
+
+    document.addEventListener("input", () => {
+      nameInput.value != "" && commentInput.value != ""
+        ? (addButtonElement.classList.remove('disabled'))
+        : (addButtonElement.classList.add('disabled'));
+    });
 
     // Ответ на комменатрий
-    const pushedComments = document.querySelectorAll('.comment');
+    const pushedComments = document.querySelectorAll('.comment-text');
 
     for (const repliedComment of pushedComments) {
-      const index = repliedComment.dataset.index;
-
       repliedComment.addEventListener('click', () => {
-        commentInput.value = '>' + ' ' + comment[index].text + '\n' + '\n' + comment[index].name + ',';
-        commentInput.focus();
+        const index = repliedComment.dataset.index;
+
+        const commentQuote = comment[index];
+        quoteGlobal = `> ${commentQuote.name}:\n${commentQuote.text}`;
+        commentInput.value = `"${quoteGlobal}"\n`;
+
       });
     }
 
@@ -189,6 +236,7 @@
       .replaceAll('"', "&quot;");
 
     const safeCommentInputValue = commentInput.value
+      .replace(`"${quoteGlobal}"\n`, '')
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;");
@@ -196,10 +244,14 @@
     comment.push({
       name: safeNameInputValue,
       text: safeCommentInputValue,
+      quote: quoteGlobal,
       likes: 0,
       time: commentTime(),
+      isEdit: false,
+
     });
 
+    quoteGlobal = '';
     nameInput.value = '';
     commentInput.value = '';
     initEventListeners();
