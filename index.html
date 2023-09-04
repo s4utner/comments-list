@@ -178,9 +178,7 @@
       });
     }
 
-    //блокировка кнопки
-    addButtonElement.classList.add('disabled');
-
+    // Блокировка кнопки
     document.addEventListener("input", () => {
       nameInput.value != "" && commentInput.value != ""
         ? (addButtonElement.classList.remove('disabled'))
