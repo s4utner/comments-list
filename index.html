@@ -42,27 +42,17 @@
 
   let quoteGlobal = "";
 
+  fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
+    method: 'GET'
+  }).then((response) => {
+    response.json().then((responseData) => {
+      comment = responseData;
+      renderComment();
+    });
+  });
+
   // Список комментариев
-  let comment = [
-    {
-      name: 'Глеб Фокин',
-      text: 'Это будет первый комментарий на этой странице',
-      quote: "",
-      isEdit: false,
-      likes: 3,
-      isLiked: false,
-      time: '12.02.22 12:18',
-    },
-    {
-      name: 'Варвара Н.',
-      text: 'Мне нравится как оформлена эта страница! ❤',
-      quote: "",
-      isEdit: false,
-      likes: 75,
-      isLiked: true,
-      time: '13.02.22 19:22',
-    },
-  ];
+  let comment = [];
 
   // Время комментария
   const commentTime = () => {
@@ -239,14 +229,41 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;");
 
-    comment.push({
-      name: safeNameInputValue,
-      text: safeCommentInputValue,
-      quote: quoteGlobal,
-      likes: 0,
-      time: commentTime(),
-      isEdit: false,
+    fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
+      method: 'POST',
+      body: JSON.stringify({
+        author: { name: safeNameInputValue },
+        text: safeCommentInputValue,
+        quote: "",
+        isEdit: false,
+        likes: 0,
+        isLiked: false,
+        date: commentTime(),
+      }),
+    }).then((response) => {
+      response.json().then((responseData) => {
+        const appComment = responseData.comment.map((comment) => {
+          return {
+            name: comment.author.name,
+            date: new Date(comment.date),
+            text: comment.text,
+            likes: comment.likes,
+            isLiked: false,
+          };
+        });
 
+        fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
+          method: 'GET',
+        }).then((response) => {
+          response.json().then((responseData) => {
+            comment = responseData;
+            renderComment();
+          });
+        })
+
+        comment = appComment;
+        renderComment();
+      });
     });
 
     quoteGlobal = '';
