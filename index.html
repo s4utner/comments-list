@@ -43,7 +43,7 @@
   let quoteGlobal = "";
 
   fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
-    method: 'GET'
+    method: 'GET',
   }).then((response) => {
     response.json().then((responseData) => {
       comment = responseData;
@@ -99,7 +99,7 @@
 
   // Рендер комментариев
   const renderComment = () => {
-    const commentsHTML = comment
+    const commentsHTML = comment.comments
       .map((comment, index) => {
         return `<li class="comment" data-index="${index}">
           <div class="comment-header">
@@ -232,13 +232,8 @@
     fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
       method: 'POST',
       body: JSON.stringify({
-        author: { name: safeNameInputValue },
-        text: safeCommentInputValue,
-        quote: "",
-        isEdit: false,
-        likes: 0,
-        isLiked: false,
-        date: commentTime(),
+        text: commentInput.value,
+        name: nameInput.value,
       }),
     }).then((response) => {
       response.json().then((responseData) => {
