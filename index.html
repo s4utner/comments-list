@@ -42,16 +42,18 @@
 
   let quoteGlobal = "";
 
-  fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
-    method: 'GET',
-  }).then((response) => {
-    response.json().then((responseData) => {
-      comment = responseData;
-      renderComment();
+  const getApiData = () => {
+    fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
+      method: 'GET',
+    }).then((response) => {
+      response.json().then((responseData) => {
+        comment = responseData;
+        renderComment();
+      });
     });
-  });
+  };
+  getApiData();
 
-  // Список комментариев
   let comment = [];
 
   // Время комментария
@@ -232,8 +234,8 @@
     fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
       method: 'POST',
       body: JSON.stringify({
-        text: commentInput.value,
-        name: nameInput.value,
+        text: safeCommentInputValue,
+        name: safeNameInputValue,
       }),
     }).then((response) => {
       response.json().then((responseData) => {
@@ -247,14 +249,7 @@
           };
         });
 
-        fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
-          method: 'GET',
-        }).then((response) => {
-          response.json().then((responseData) => {
-            comment = responseData;
-            renderComment();
-          });
-        })
+        getApiData();
 
         comment = appComment;
         renderComment();
