@@ -47,7 +47,7 @@
       method: 'GET',
     }).then((response) => {
       response.json().then((responseData) => {
-        comment = responseData;
+        comment = responseData.comments;
         renderComment();
       });
     });
@@ -195,8 +195,8 @@
   };
   renderComment();
 
-  // Добавление комментария
-  const pushComment = () => {
+  // Деактивация кнопки при пустых полях ввода
+  const addButtonDeactivation = () => {
     addButtonElement.classList.remove('disabled');
     nameInput.classList.remove('error');
     commentInput.classList.remove('error');
@@ -219,7 +219,11 @@
       addButtonElement.classList.add('disabled');
       return;
     };
+  };
+  addButtonDeactivation();
 
+  // Безопасный ввод
+  const safeInput = () => {
     const safeNameInputValue = nameInput.value
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -230,6 +234,13 @@
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;");
+  };
+
+  // Добавление комментария
+  const pushComment = () => {
+
+    addButtonDeactivation();
+    safeInput();
 
     fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
       method: 'POST',
@@ -239,7 +250,7 @@
       }),
     }).then((response) => {
       response.json().then((responseData) => {
-        const appComment = responseData.comment.map((comment) => {
+        const appComment = responseData.comments.map((comment) => {
           return {
             name: comment.author.name,
             date: new Date(comment.date),
