@@ -51,7 +51,7 @@
         const appComments = responseData.comments.map((comment) => {
           return {
             name: comment.author.name,
-            date: comment.date,
+            date: new Date(comment.date).toLocaleDateString() + " " + new Date(comment.date).getHours() + ":" + new Date(comment.date).getMinutes() + ":" + new Date(comment.date).getSeconds(),
             text: comment.text,
             likes: comment.likes,
             isLiked: false,
@@ -66,30 +66,6 @@
   getApiData();
 
   let comment = [];
-
-  // Время комментария
-  const commentTime = () => {
-    const date = new Date();
-    let day = date.getDate();
-    if (day < 10) {
-      day = '0' + day;
-    }
-    let month = date.getMonth() + 1;
-    if (month < 10) {
-      month = '0' + month;
-    }
-    let year = date.getFullYear();
-    year = year.toString().split('').splice(2, 2).join('');
-    let hours = date.getHours();
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
-    let minutes = date.getMinutes();
-    if (minutes < 10) {
-      minutes = '0' + minutes;
-    }
-    return day + '.' + month + '.' + year + ' ' + hours + ':' + minutes;
-  };
 
   // Поставить лайк
   const initEventListeners = () => {
@@ -117,7 +93,7 @@
         return `<li class="comment" data-index="${index}">
           <div class="comment-header">
             <div>${comment.name}</div>
-            <div>${comment.date}</div>
+            <div class="date">${comment.date}</div>
           </div>
           ${comment.quote
             ? `<div
