@@ -49,7 +49,6 @@
   let quoteGlobal = "";
 
   // Получение комментариев через API
-
   const getApiData = () => {
     container.classList.add('delete');
     pageLoader.textContent = `Пожалуйста, подождите.
@@ -210,35 +209,8 @@
   getApiData();
   renderComment();
 
-  //Добавление комментария
-  const pushComment = () => {
-    addButtonElement.disabled = false;
-    addButtonElement.classList.remove('disabled');
-    nameInput.classList.remove('error');
-    commentInput.classList.remove('error');
-
-    if (nameInput.value === '' && commentInput.value === '') {
-      nameInput.classList.add('error');
-      commentInput.classList.add('error');
-      addButtonElement.classList.add('disabled');
-      addButtonElement.disabled = true;
-      return;
-    };
-
-    if (nameInput.value === '') {
-      nameInput.classList.add('error');
-      addButtonElement.classList.add('disabled');
-      addButtonElement.disabled = true;
-      return;
-    };
-
-    if (commentInput.value === '') {
-      commentInput.classList.add('error');
-      addButtonElement.classList.add('disabled');
-      addButtonElement.disabled = true;
-      return;
-    };
-
+  //Добавление комментариев в API
+  const pushApiData = () => {
     const safeNameInputValue = nameInput.value
       .replaceAll("<", "&lt;")
       .replaceAll(">", "&gt;")
@@ -266,7 +238,8 @@
       if (response.status === 400) {
         throw new Error('Имя и комментарий должны быть не короче 3 символов');
       } else if (response.status === 500) {
-        throw new Error('Сервер прилег поспать. Попробуй еще раз');
+        pushApiData();
+        throw new Error('Сервер прилег поспать. Подтвердите повторную попытку отправки');
       } else {
         return response.json();
       }
@@ -299,6 +272,38 @@
           alert(error.message);
         }
       });
+  }
+
+  //Добавление комментария 
+  const pushComment = () => {
+    addButtonElement.disabled = false;
+    addButtonElement.classList.remove('disabled');
+    nameInput.classList.remove('error');
+    commentInput.classList.remove('error');
+
+    if (nameInput.value === '' && commentInput.value === '') {
+      nameInput.classList.add('error');
+      commentInput.classList.add('error');
+      addButtonElement.classList.add('disabled');
+      addButtonElement.disabled = true;
+      return;
+    };
+
+    if (nameInput.value === '') {
+      nameInput.classList.add('error');
+      addButtonElement.classList.add('disabled');
+      addButtonElement.disabled = true;
+      return;
+    };
+
+    if (commentInput.value === '') {
+      commentInput.classList.add('error');
+      addButtonElement.classList.add('disabled');
+      addButtonElement.disabled = true;
+      return;
+    };
+
+    pushApiData();
   };
 
   // Обработчик на кнопке 'Написать'
