@@ -8,8 +8,10 @@
 </head>
 
 <body>
+  <div class="page-loader"></div>
   <div class="container">
     <ul class="comments"></ul>
+    <div class="comment-loader delete"></div>
     <div class="add-form">
       <input type="text" class="add-form-name" placeholder="Введите ваше имя" oninput="" />
       <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"
@@ -39,19 +41,30 @@
   const comments = document.querySelector(".comments");
   const nameInput = document.querySelector(".add-form-name");
   const commentInput = document.querySelector(".add-form-text");
+  const container = document.querySelector(".container");
+  const addForm = document.querySelector(".add-form");
+  const pageLoader = document.querySelector(".page-loader");
+  const commentLoader = document.querySelector(".comment-loader");
 
   let quoteGlobal = "";
 
   // Получение комментариев через API
+
   const getApiData = () => {
-    fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
+    container.classList.add('delete');
+    pageLoader.textContent = `Пожалуйста, подождите.
+    Комментарии загружаются...`;
+    return fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
       method: 'GET',
-    }).then((response) => {
-      response.json().then((responseData) => {
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
         const appComments = responseData.comments.map((comment) => {
           return {
             name: comment.author.name,
-            date: new Date(comment.date).toLocaleDateString() + " " + (new Date(comment.date).getHours() < 10 ? 0 + new Date(comment.date).getHours() : new Date(comment.date).getHours()) + ":" + (new Date(comment.date).getMinutes() < 10 ? '0' + new Date(comment.date).getMinutes() : new Date(comment.date).getMinutes()) + ":" + (new Date(comment.date).getSeconds() < 10 ? '0' + new Date(comment.date).getSeconds() : new Date(comment.date).getSeconds()),
+            date: new Date(comment.date).toLocaleDateString() + " " + (new Date(comment.date).getHours() < 10 ? '0' + new Date(comment.date).getHours() : new Date(comment.date).getHours()) + ":" + (new Date(comment.date).getMinutes() < 10 ? '0' + new Date(comment.date).getMinutes() : new Date(comment.date).getMinutes()) + ":" + (new Date(comment.date).getSeconds() < 10 ? '0' + new Date(comment.date).getSeconds() : new Date(comment.date).getSeconds()),
             text: comment.text,
             likes: comment.likes,
             isLiked: false,
@@ -60,10 +73,20 @@
         })
         comment = appComments;
         renderComment();
-      });
-    });
+      })
+      .then((response) => {
+        pageLoader.textContent = "";
+        pageLoader.classList.add('delete');
+        container.classList.remove('delete');
+      })
+      .catch((error) => {
+        if (error.message === 'Failed to fetch') {
+          alert(`Кажется, соединение с интернетом потеряно. Проверь настройки`);
+        } else {
+          alert(error.message);
+        }
+      })
   };
-  getApiData();
 
   let comment = [];
 
@@ -160,8 +183,12 @@
     // Блокировка кнопки
     document.addEventListener("input", () => {
       nameInput.value != "" && commentInput.value != ""
-        ? (addButtonElement.classList.remove('disabled'))
-        : (addButtonElement.classList.add('disabled'));
+        ? (addButtonElement.classList.remove('disabled'),
+          addButtonElement.disabled = false,
+          nameInput.classList.remove('error'),
+          commentInput.classList.remove('error'))
+        : (addButtonElement.classList.add('disabled'),
+          addButtonElement.disabled = true);
     });
 
     // Ответ на комменатрий
@@ -180,10 +207,12 @@
 
     initEventListeners();
   };
+  getApiData();
   renderComment();
 
-  // Добавление комментария
+  //Добавление комментария
   const pushComment = () => {
+    addButtonElement.disabled = false;
     addButtonElement.classList.remove('disabled');
     nameInput.classList.remove('error');
     commentInput.classList.remove('error');
@@ -192,18 +221,21 @@
       nameInput.classList.add('error');
       commentInput.classList.add('error');
       addButtonElement.classList.add('disabled');
+      addButtonElement.disabled = true;
       return;
     };
 
     if (nameInput.value === '') {
       nameInput.classList.add('error');
       addButtonElement.classList.add('disabled');
+      addButtonElement.disabled = true;
       return;
     };
 
     if (commentInput.value === '') {
       commentInput.classList.add('error');
       addButtonElement.classList.add('disabled');
+      addButtonElement.disabled = true;
       return;
     };
 
@@ -218,25 +250,55 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;");
 
+    addForm.classList.add('delete');
+    commentLoader.classList.remove('delete');
+    commentLoader.textContent = `Пожалуйста, подождите.
+    Ваш комментарий добавляется...`;
+
     fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
       method: 'POST',
       body: JSON.stringify({
         text: safeCommentInputValue,
         name: safeNameInputValue,
+        forceError: true,
       }),
     }).then((response) => {
-      response.json().then((responseData) => {
-        comment = responseData.comments;
+      if (response.status === 400) {
+        throw new Error('Имя и комментарий должны быть не короче 3 символов');
+      } else if (response.status === 500) {
+        throw new Error('Сервер прилег поспать. Попробуй еще раз');
+      } else {
+        return response.json();
+      }
+    })
+      .then(() => {
+        comment.push({
+          name: safeNameInputValue,
+          date: new Date().toLocaleDateString() + " " + (new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours()) + ":" + (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes()) + ":" + (new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds()),
+          text: safeCommentInputValue,
+          likes: 0,
+          isLiked: false,
+        });
+        commentLoader.classList.add('delete');
+        addForm.classList.remove('delete');
+        initEventListeners();
+        renderComment();
+      })
+      .then(() => {
+        quoteGlobal = '';
+        nameInput.value = '';
+        commentInput.value = '';
+      })
+      .catch((error) => {
+        commentLoader.classList.add('delete');
+        addForm.classList.remove('delete');
+        addButtonElement.disabled = false;
+        if (error.message === 'Failed to fetch') {
+          alert('Кажется, соединение с интернетом потеряно. Проверь настройки');
+        } else {
+          alert(error.message);
+        }
       });
-    });
-
-    getApiData();
-
-    quoteGlobal = '';
-    nameInput.value = '';
-    commentInput.value = '';
-    initEventListeners();
-    renderComment();
   };
 
   // Обработчик на кнопке 'Написать'
