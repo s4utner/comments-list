@@ -1,4 +1,4 @@
-export const renderComments = ({ comment, comments, initEventListeners }) => {
+export const renderComments = ({ comment, comments, initEventListeners, quoteGlobal, commentInput }) => {
     const commentsHTML = comment
         .map((comment, index) => {
             return `<li class="comment" data-index="${index}">
