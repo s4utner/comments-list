@@ -2,6 +2,7 @@ import { getComments, pushComment } from "./api.js";
 import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
+import { inputsOnPush } from "./inputsOnPush.js";
 
 // Переменные
 const addButtonElement = document.querySelector(".add-form-button");
@@ -33,7 +34,7 @@ const getApiComments = () => {
                 };
             })
             comment = appComments;
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
         })
         .then(() => {
             pageLoader.textContent = "";
@@ -51,12 +52,9 @@ const getApiComments = () => {
 
 let comment = [];
 
-// Поставить лайк
-
 getApiComments();
-renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
+renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
 
-//Добавление комментариев в API
 const pushApiComment = () => {
     const safeNameInputValue = nameInput.value
         .replaceAll("<", "&lt;")
@@ -85,8 +83,8 @@ const pushApiComment = () => {
             });
             commentLoader.classList.add('delete');
             addForm.classList.remove('delete');
-            initEventListeners();
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
+            initEventListeners({ comment, renderComments, comments, quoteGlobal, commentInput, nameInput, addButtonElement });
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
         })
         .then(() => {
             quoteGlobal = '';
@@ -105,51 +103,20 @@ const pushApiComment = () => {
         });
 }
 
-const inputsOnPush = () => {
-    addButtonElement.disabled = false;
-    addButtonElement.classList.remove('disabled');
-    nameInput.classList.remove('error');
-    commentInput.classList.remove('error');
-
-    if (nameInput.value === '' && commentInput.value === '') {
-        nameInput.classList.add('error');
-        commentInput.classList.add('error');
-        addButtonElement.classList.add('disabled');
-        addButtonElement.disabled = true;
-        return;
-    };
-
-    if (nameInput.value === '') {
-        nameInput.classList.add('error');
-        addButtonElement.classList.add('disabled');
-        addButtonElement.disabled = true;
-        return;
-    };
-
-    if (commentInput.value === '') {
-        commentInput.classList.add('error');
-        addButtonElement.classList.add('disabled');
-        addButtonElement.disabled = true;
-        return;
-    };
-
-    pushApiComment();
-};
-
 // Обработчик на кнопке 'Написать'
 addButtonElement.addEventListener('click', inputsOnPush);
 
 // Срабатывание кнопки 'Написать' при клике на Enter
 document.addEventListener('keyup', function (enter) {
     if (enter.keyCode === 13) {
-        inputsOnPush();
+        inputsOnPush({ addButtonElement, nameInput, commentInput, pushApiComment });
     }
 });
 
 // Удаление последнего комментария
 deleteButtonElement.addEventListener('click', () => {
     const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
-    renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
+    renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
 });
 
 console.log("It works!");

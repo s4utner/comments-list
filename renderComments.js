@@ -1,4 +1,4 @@
-export const renderComments = ({ comment, comments, initEventListeners, quoteGlobal, commentInput }) => {
+export const renderComments = ({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement }) => {
     const commentsHTML = comment
         .map((comment, index) => {
             return `<li class="comment" data-index="${index}">
@@ -93,5 +93,5 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
         });
     };
 
-    initEventListeners({ comment, renderComments, comments });
+    initEventListeners({ comment, renderComments, comments, quoteGlobal, commentInput, nameInput, addButtonElement });
 };
