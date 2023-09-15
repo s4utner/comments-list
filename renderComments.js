@@ -48,7 +48,7 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
             const editComment = comment[index];
             editComment.isEdit = true;
 
-            renderComments({comment, comments, initEventListeners, quoteGlobal, commentInput});
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
 
             document.querySelector(".add-form-text").focus();
         });
@@ -64,7 +64,7 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
             saveComment.text = editFormText.value;
 
             saveComment.isEdit = false;
-            renderComments({comment, comments, initEventListeners, quoteGlobal, commentInput});
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
         });
     }
 
@@ -93,5 +93,5 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
         });
     };
 
-    initEventListeners();
+    initEventListeners({ comment, renderComments, comments });
 };

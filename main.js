@@ -1,6 +1,7 @@
 import { getComments, pushComment } from "./api.js";
 import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
+import { initEventListeners } from "./like.js";
 
 // Переменные
 const addButtonElement = document.querySelector(".add-form-button");
@@ -51,23 +52,6 @@ const getApiComments = () => {
 let comment = [];
 
 // Поставить лайк
-const initEventListeners = () => {
-    const likeButtonElement = document.querySelectorAll('.like-button');
-    for (const item of likeButtonElement) {
-        item.addEventListener('click', (event) => {
-            event.stopPropagation();
-            const index = item.dataset.index;
-            if (comment[index].isLiked) {
-                comment[index].isLiked = false;
-                comment[index].likes--;
-            } else {
-                comment[index].isLiked = true;
-                comment[index].likes++;
-            }
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
-        });
-    };
-};
 
 getApiComments();
 renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
