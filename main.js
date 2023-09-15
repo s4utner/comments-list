@@ -32,7 +32,7 @@ const getApiComments = () => {
                 };
             })
             comment = appComments;
-            renderComments({ comment, comments, initEventListeners });
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
         })
         .then(() => {
             pageLoader.textContent = "";
@@ -64,13 +64,13 @@ const initEventListeners = () => {
                 comment[index].isLiked = true;
                 comment[index].likes++;
             }
-            renderComments({ comment, comments, initEventListeners });
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
         });
     };
 };
 
 getApiComments();
-renderComments({ comment, comments, initEventListeners });
+renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
 
 //Добавление комментариев в API
 const pushApiComment = () => {
@@ -102,7 +102,7 @@ const pushApiComment = () => {
             commentLoader.classList.add('delete');
             addForm.classList.remove('delete');
             initEventListeners();
-            renderComments({ comment, comments, initEventListeners });
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
         })
         .then(() => {
             quoteGlobal = '';
@@ -165,7 +165,7 @@ document.addEventListener('keyup', function (enter) {
 // Удаление последнего комментария
 deleteButtonElement.addEventListener('click', () => {
     const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
-    renderComments({ comment, comments, initEventListeners });
+    renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
 });
 
 console.log("It works!");
