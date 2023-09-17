@@ -104,7 +104,9 @@ const pushApiComment = () => {
 }
 
 // Обработчик на кнопке 'Написать'
-addButtonElement.addEventListener('click', inputsOnPush);
+addButtonElement.addEventListener('click', function () {
+    inputsOnPush({ addButtonElement, nameInput, commentInput, pushApiComment });
+});
 
 // Срабатывание кнопки 'Написать' при клике на Enter
 document.addEventListener('keyup', function (enter) {
