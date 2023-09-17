@@ -3,6 +3,7 @@ import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
 import { inputsOnPush } from "./inputsOnPush.js";
+import { safeInputValues } from "./safeInputValues.js";
 
 // Переменные
 const addButtonElement = document.querySelector(".add-form-button");
