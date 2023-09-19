@@ -1,5 +1,5 @@
 import { getComments, pushComment } from "./api.js";
-import { dateOnGet, dateOnPush, currentDate } from "./date.js";
+import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
 import { inputsOnPush } from "./inputsOnPush.js";
@@ -27,7 +27,7 @@ const getApiComments = () => {
                 const defaultDate = comment.date;
                 return {
                     name: comment.author.name,
-                    date: dateOnGet({ defaultDate }),
+                    date: date({ defaultDate }),
                     text: comment.text,
                     likes: comment.likes,
                     isLiked: false,
@@ -72,11 +72,12 @@ const pushApiComment = () => {
     commentLoader.textContent = `Пожалуйста, подождите.
   Ваш комментарий добавляется...`;
 
-    pushComment({ safeNameInputValue, safeCommentInputValue, currentDate })
+    pushComment({ safeNameInputValue, safeCommentInputValue })
         .then(() => {
+            const defaultDate = new Date();
             comment.push({
                 name: safeNameInputValue,
-                date: dateOnPush({ currentDate }),
+                date: date({ defaultDate }),
                 text: safeCommentInputValue,
                 likes: 0,
                 isLiked: false,

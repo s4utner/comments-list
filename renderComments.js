@@ -13,7 +13,6 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
                       >${comment.quote}</div>`
                     : ``
                 }
-
         ${comment.isEdit
                     ? `<textarea
                       class="add-form-text"
@@ -21,7 +20,6 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
                     >${comment.text}</textarea>`
                     : `<div class="comment-body"><div class="comment-text" data-index="${index}">${comment.text}</div></div>`
                 }
-
         <div class="comment-footer">
                         ${comment.isEdit
                     ? `<button data-index="${index}" class='save-form-button'>Сохранить изменения</button>`
@@ -48,7 +46,7 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
             const editComment = comment[index];
             editComment.isEdit = true;
 
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
 
             document.querySelector(".add-form-text").focus();
         });
@@ -64,7 +62,7 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
             saveComment.text = editFormText.value;
 
             saveComment.isEdit = false;
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput });
+            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
         });
     }
 
