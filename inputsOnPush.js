@@ -1,4 +1,4 @@
-export const inputsOnPush = ({ addButtonElement, nameInput, commentInput, pushApiComment }) => {
+export const inputsOnPush = ({ addButtonElement, nameInput, commentInput, pushApiComment, safeCommentInputValue, safeNameInputValue, date, comment, renderComments, comments, initEventListeners, quoteGlobal, pushComment }) => {
     addButtonElement.disabled = false;
     addButtonElement.classList.remove('disabled');
     nameInput.classList.remove('error');
@@ -26,5 +26,5 @@ export const inputsOnPush = ({ addButtonElement, nameInput, commentInput, pushAp
         return;
     };
 
-    pushApiComment();
+    pushApiComment({ safeCommentInputValue, safeNameInputValue, date, comment, renderComments, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement, pushComment });
 };
