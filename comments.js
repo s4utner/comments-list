@@ -57,7 +57,7 @@ export const pushApiComment = ({ safeCommentInputValue, safeNameInputValue, date
     commentLoader.textContent = `Пожалуйста, подождите.
   Ваш комментарий добавляется...`;
 
-    pushComment({ safeNameInputValue, safeCommentInputValue })
+    pushComment({ safeCommentInputValue, safeNameInputValue, date, comment, renderComments, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement })
         .then(() => {
             const defaultDate = new Date();
             comment.push({

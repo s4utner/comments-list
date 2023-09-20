@@ -7,7 +7,7 @@ export const getComments = () => {
         })
 };
 
-export const pushComment = ({ safeCommentInputValue, safeNameInputValue, date, comment, renderComments, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement, pushComment, pushApiComment }) => {
+export const pushComment = ({ safeCommentInputValue, safeNameInputValue, date, comment, renderComments, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement }) => {
     return fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
         method: 'POST',
         body: JSON.stringify({
