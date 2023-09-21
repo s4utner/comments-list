@@ -7,7 +7,7 @@ export const getComments = () => {
         })
 };
 
-export const pushComment = ({ safeCommentInputValue, safeNameInputValue, date, comment, renderComments, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement }) => {
+export const pushComment = ({ safeNameInputValue, safeCommentInputValue }) => {
     return fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
         method: 'POST',
         body: JSON.stringify({
@@ -19,7 +19,7 @@ export const pushComment = ({ safeCommentInputValue, safeNameInputValue, date, c
         if (response.status === 400) {
             throw new Error('Имя и комментарий должны быть не короче 3 символов');
         } else if (response.status === 500) {
-            pushApiComment({ safeCommentInputValue, safeNameInputValue, date, comment, renderComments, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement, pushComment });
+            pushApiComment();
             throw new Error('Сервер прилег поспать. Подтвердите повторную попытку отправки');
         } else {
             return response.json();
