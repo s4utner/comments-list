@@ -1,5 +1,5 @@
 export const getComments = () => {
-    return fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
+    return fetch('https://wedev-api.sky.pro/api/v2/sautner-denis/comments', {
         method: 'GET',
     })
         .then((response) => {
@@ -8,7 +8,7 @@ export const getComments = () => {
 };
 
 export const pushComment = ({ safeNameInputValue, safeCommentInputValue }) => {
-    return fetch('https://wedev-api.sky.pro/api/v1/sautner-denis/comments', {
+    return fetch('https://wedev-api.sky.pro/api/v2/sautner-denis/comments', {
         method: 'POST',
         body: JSON.stringify({
             text: safeCommentInputValue,
