@@ -26,3 +26,38 @@ export const pushComment = ({ safeNameInputValue, safeCommentInputValue }) => {
         }
     })
 }
+
+export const registration = (safeNameInputValue, safeLoginInputValue, safePasswordInputValue) => {
+    return fetch('https://wedev-api.sky.pro/api/user', {
+        method: 'POST',
+        body: JSON.stringify({
+            login: safeLoginInputValue,
+            name: safeNameInputValue,
+            password: safePasswordInputValue
+        }),
+    }).then((response) => {
+        if (response.status === 400) {
+            alert('Данный логин уже занят');
+            throw new Error('Данный логин уже занят');
+        } else {
+            alert("Регистрация прошла успешно");
+        }
+    })
+}
+
+export const signIn = (safeLoginInputValue, safePasswordInputValue) => {
+    return fetch('https://wedev-api.sky.pro/api/user/login', {
+        method: 'POST',
+        body: JSON.stringify({
+            login: safeLoginInputValue,
+            password: safePasswordInputValue
+        }),
+    }).then((response) => {
+        if (response.status === 400) {
+            alert('Введён неверный логин или пароль');
+            throw new Error('Введён неверный логин или пароль');
+        } else {
+            alert("Авторизация прошла успешно");
+        }
+    })
+}

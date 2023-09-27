@@ -1,4 +1,5 @@
 import { app } from "./main.js";
+import { registration, signIn } from "./api.js";
 
 export const renderLoginPage = () => {
     const loginHTML = `
@@ -8,7 +9,7 @@ export const renderLoginPage = () => {
     </div>
     <div class="login-form">
         <div class="login-form-inputs">
-            <input type="text" class="login-form-name" placeholder="Введите логин" />
+            <input type="text" class="login-form-login" placeholder="Введите логин" />
             <input type="text" class="login-form-password" placeholder="Введите пароль" />
         </div>
         <div class="login-form-row">
@@ -21,7 +22,31 @@ export const renderLoginPage = () => {
 
     const signUpLink = document.querySelector(".sign-up");
     signUpLink.addEventListener('click', renderRegistrationPage);
-}
+
+    const loginInput = document.querySelector(".login-form-login");
+    const passwordInput = document.querySelector(".login-form-password");
+
+    const safeLoginInputValue = loginInput.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
+    const safePasswordInputValue = passwordInput.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
+    const signInButton = document.querySelector(".login-form-button");
+    signInButton.addEventListener('click', () => {
+        if (safeLoginInputValue === '' || safePasswordInputValue === '') {
+            signInButton.classList.add('disabled');
+            signInButton.disabled = true;
+            alert('Все поля ввода должны быть заполнены');
+        } else {
+            signIn(safeLoginInputValue, safePasswordInputValue);
+        }
+    })
+};
 
 export const renderRegistrationPage = () => {
     const loginHTML = `
@@ -32,7 +57,7 @@ export const renderRegistrationPage = () => {
     <div class="login-form">
         <div class="login-form-inputs">
             <input type="text" class="login-form-name" placeholder="Введите Имя" />
-            <input type="text" class="login-form-name" placeholder="Введите логин" />
+            <input type="text" class="login-form-login" placeholder="Введите логин" />
             <input type="text" class="login-form-password" placeholder="Введите пароль" />
         </div>
         <div class="login-form-row">
@@ -45,4 +70,34 @@ export const renderRegistrationPage = () => {
 
     const signInLink = document.querySelector(".sign-in");
     signInLink.addEventListener('click', renderLoginPage);
-}
+
+    const nameInput = document.querySelector(".login-form-name");
+    const loginInput = document.querySelector(".login-form-login");
+    const passwordInput = document.querySelector(".login-form-password");
+
+    const safeNameInputValue = nameInput.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
+    const safeLoginInputValue = loginInput.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
+    const safePasswordInputValue = passwordInput.value
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+
+    const registrationButton = document.querySelector(".login-form-button");
+    registrationButton.addEventListener('click', () => {
+        if (safeNameInputValue === '' || safeLoginInputValue === '' || safePasswordInputValue === '') {
+            registrationButton.classList.add('disabled');
+            registrationButton.disabled = true;
+            alert('Все поля ввода должны быть заполнены');
+        } else {
+            registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue);
+        }
+    })
+};

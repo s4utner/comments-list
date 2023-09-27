@@ -6,11 +6,13 @@ import { initEventListeners } from "./like.js";
 import { renderLoginPage } from "./loginPage.js";
 
 // Переменные
+export const app = document.querySelector(".app");
+const loginPageLink = document.querySelector(".login-page-link");
 const addButtonElement = document.querySelector(".add-form-button");
-const deleteButtonElement = document.querySelector(".delete-form-button");
 const comments = document.querySelector(".comments");
 const nameInput = document.querySelector(".add-form-name");
 const commentInput = document.querySelector(".add-form-text");
+const deleteButtonElement = document.querySelector(".delete-form-button");
 
 let quoteGlobal = "";
 
@@ -96,17 +98,9 @@ deleteButtonElement.addEventListener('click', () => {
     renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
 });
 
-
-const loginPageLink = document.querySelector(".login-page-link");
-export const app = document.querySelector(".app");
-
-
-
+// Обработчик на ссылке авторизации
 loginPageLink.addEventListener("click", () => {
     renderLoginPage();
-    console.log(app);
 });
-
-
 
 console.log("It works!");
