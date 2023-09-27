@@ -38,10 +38,14 @@ export const renderLoginPage = () => {
 
     const signInButton = document.querySelector(".login-form-button");
     signInButton.addEventListener('click', () => {
+        signInButton.disabled = false;
+        signInButton.classList.remove('disabled');
+
         if (safeLoginInputValue === '' || safePasswordInputValue === '') {
             signInButton.classList.add('disabled');
             signInButton.disabled = true;
             alert('Все поля ввода должны быть заполнены');
+            return;
         } else {
             signIn(safeLoginInputValue, safePasswordInputValue);
         }
@@ -92,10 +96,14 @@ export const renderRegistrationPage = () => {
 
     const registrationButton = document.querySelector(".login-form-button");
     registrationButton.addEventListener('click', () => {
+        registrationButton.disabled = false;
+        registrationButton.classList.remove('disabled');
+
         if (safeNameInputValue === '' || safeLoginInputValue === '' || safePasswordInputValue === '') {
             registrationButton.classList.add('disabled');
             registrationButton.disabled = true;
             alert('Все поля ввода должны быть заполнены');
+            return;
         } else {
             registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue);
         }
