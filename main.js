@@ -10,17 +10,10 @@ const deleteButtonElement = document.querySelector(".delete-form-button");
 const comments = document.querySelector(".comments");
 const nameInput = document.querySelector(".add-form-name");
 const commentInput = document.querySelector(".add-form-text");
-const container = document.querySelector(".container");
-const addForm = document.querySelector(".add-form");
-const pageLoader = document.querySelector(".page-loader");
-const commentLoader = document.querySelector(".comment-loader");
 
 let quoteGlobal = "";
 
 const getApiComments = () => {
-    container.classList.add('delete');
-    pageLoader.textContent = `Пожалуйста, подождите.
-  Комментарии загружаются...`;
     getComments()
         .then((responseData) => {
             const appComments = responseData.comments.map((comment) => {
@@ -35,11 +28,6 @@ const getApiComments = () => {
             })
             comment = appComments;
             renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
-        })
-        .then(() => {
-            pageLoader.textContent = "";
-            pageLoader.classList.add('delete');
-            container.classList.remove('delete');
         })
         .catch((error) => {
             if (error.message === 'Failed to fetch') {
@@ -68,23 +56,9 @@ const pushApiComment = () => {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
 
-    addForm.classList.add('delete');
-    commentLoader.classList.remove('delete');
-    commentLoader.textContent = `Пожалуйста, подождите.
-  Ваш комментарий добавляется...`;
-
     pushComment({ safeNameInputValue, safeCommentInputValue })
         .then(() => {
-            const defaultDate = new Date();
-            comment.push({
-                name: safeNameInputValue,
-                date: date({ defaultDate }),
-                text: safeCommentInputValue,
-                likes: 0,
-                isLiked: false,
-            });
-            commentLoader.classList.add('delete');
-            addForm.classList.remove('delete');
+            getApiComments();
             initEventListeners({ comment, renderComments, comments, comment, quoteGlobal, commentInput, nameInput, addButtonElement });
             renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
         })
@@ -94,8 +68,6 @@ const pushApiComment = () => {
             commentInput.value = '';
         })
         .catch((error) => {
-            commentLoader.classList.add('delete');
-            addForm.classList.remove('delete');
             addButtonElement.disabled = false;
             if (error.message === 'Failed to fetch') {
                 alert('Кажется, соединение с интернетом потеряно. Проверь настройки');
