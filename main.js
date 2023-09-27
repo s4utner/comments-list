@@ -3,6 +3,7 @@ import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
 import { inputsOnPush } from "./inputsOnPush.js";
 import { initEventListeners } from "./like.js";
+import { renderLoginPage } from "./loginPage.js";
 
 // Переменные
 const addButtonElement = document.querySelector(".add-form-button");
@@ -94,5 +95,18 @@ deleteButtonElement.addEventListener('click', () => {
     const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
     renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
 });
+
+
+const loginPageLink = document.querySelector(".login-page-link");
+export const app = document.querySelector(".app");
+
+
+
+loginPageLink.addEventListener("click", () => {
+    renderLoginPage();
+    console.log(app);
+});
+
+
 
 console.log("It works!");
