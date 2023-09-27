@@ -353,3 +353,20 @@ body {
   .login-form-button:hover {
     opacity: 0.8;
   }
+
+  .login-page-text,
+  .login-page-link {
+    font-size: 24px;
+    font-family: Helvetica;
+    color: #fff;
+    text-align: center;
+  }
+
+  .login-page-link {
+    color: #7334ea;
+  }
+
+  .login-page-link:hover {
+    opacity: 0.8;
+    text-decoration: none;
+  }

@@ -22,8 +22,8 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
                 }
         <div class="comment-footer">
                         ${comment.isEdit
-                    ? `<button data-index="${index}" class='save-form-button'>Сохранить изменения</button>`
-                    : `<button data-index="${index}" class='edit-form-button'>Редактировать комментарий</button>`
+                    ? `<button data-index="${index}" class='save-form-button'>Сохранить</button>`
+                    : `<button data-index="${index}" class='edit-form-button'>Редактировать</button>`
                 }
           <div class="likes">
             <span class="likes-counter">${comment.likes}</span>
