@@ -13,10 +13,15 @@ const comments = document.querySelector(".comments");
 const nameInput = document.querySelector(".add-form-name");
 const commentInput = document.querySelector(".add-form-text");
 const deleteButtonElement = document.querySelector(".delete-form-button");
+const addForm = document.querySelector(".add-form");
 
 let quoteGlobal = "";
 
 const getApiComments = () => {
+
+    //app.innerHTML = `<div class="loader-text">Подождите, комментарии загружаются...</div>
+    //<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
+
     getComments()
         .then((responseData) => {
             const appComments = responseData.comments.map((comment) => {
@@ -48,6 +53,10 @@ renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInpu
 
 //Добавление комментариев в API
 const pushApiComment = () => {
+
+    //addForm.innerHTML = `<div class="loader-text">Подождите, комментарий загружается...</div>
+    //<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
+
     const safeNameInputValue = nameInput.value
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")

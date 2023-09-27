@@ -60,7 +60,7 @@ export const renderRegistrationPage = () => {
     </div>
     <div class="login-form">
         <div class="login-form-inputs">
-            <input type="text" class="login-form-name" placeholder="Введите Имя" />
+            <input type="text" class="login-form-name" placeholder="Введите имя" />
             <input type="text" class="login-form-login" placeholder="Введите логин" />
             <input type="text" class="login-form-password" placeholder="Введите пароль" />
         </div>

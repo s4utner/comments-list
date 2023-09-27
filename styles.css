@@ -371,3 +371,11 @@ body {
     opacity: 0.8;
     text-decoration: none;
   }
+
+  .loader-text {
+    font-size: 32px;
+    font-family: Helvetica;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 72px;
+  }
