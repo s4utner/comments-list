@@ -1,4 +1,6 @@
-export const renderComments = ({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement }) => {
+export const app = document.querySelector(".app");
+
+export const renderComments = ({ comment, initEventListeners }) => {
     const commentsHTML = comment
         .map((comment, index) => {
             return `<li class="comment" data-index="${index}">
@@ -33,7 +35,12 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
       </li>`;
         })
         .join('');
+    const comments = document.querySelector(".comments");
     comments.innerHTML = commentsHTML;
+
+    const addButtonElement = document.querySelector(".add-form-button");
+    const nameInput = document.querySelector(".add-form-name");
+    const commentInput = document.querySelector(".add-form-text");
 
     //Редактировать комментарий
     const editButtonElements = document.querySelectorAll('.edit-form-button');
@@ -46,7 +53,7 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
             const editComment = comment[index];
             editComment.isEdit = true;
 
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+            renderComments({ comment, initEventListeners });
 
             document.querySelector(".add-form-text").focus();
         });
@@ -62,7 +69,7 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
             saveComment.text = editFormText.value;
 
             saveComment.isEdit = false;
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+            renderComments({ comment, initEventListeners });
         });
     }
 
@@ -83,7 +90,7 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
     for (const repliedComment of pushedComments) {
         repliedComment.addEventListener('click', () => {
             const index = repliedComment.dataset.index;
-
+            let quoteGlobal = "";
             const commentQuote = comment[index];
             quoteGlobal = `> ${commentQuote.name}:\n${commentQuote.text}`;
             commentInput.value = `"${quoteGlobal}"\n`;
@@ -91,5 +98,5 @@ export const renderComments = ({ comment, comments, initEventListeners, quoteGlo
         });
     };
 
-    initEventListeners({ comment, renderComments, comments, comment, quoteGlobal, commentInput, nameInput, addButtonElement });
+    initEventListeners({ comment, renderComments, comment });
 };

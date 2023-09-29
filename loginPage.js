@@ -1,4 +1,4 @@
-import { app } from "./main.js";
+import { app } from "./renderComments.js";
 import { registration, signIn } from "./api.js";
 
 export const renderLoginPage = () => {

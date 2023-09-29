@@ -4,18 +4,7 @@ import { renderComments } from "./renderComments.js";
 import { inputsOnPush } from "./inputsOnPush.js";
 import { initEventListeners } from "./like.js";
 import { renderLoginPage } from "./loginPage.js";
-
-// Переменные
-export const app = document.querySelector(".app");
-const loginPageLink = document.querySelector(".login-page-link");
-const addButtonElement = document.querySelector(".add-form-button");
-const comments = document.querySelector(".comments");
-const nameInput = document.querySelector(".add-form-name");
-const commentInput = document.querySelector(".add-form-text");
-const deleteButtonElement = document.querySelector(".delete-form-button");
-const addForm = document.querySelector(".add-form");
-
-let quoteGlobal = "";
+import { app } from "./renderComments.js";
 
 const getApiComments = () => {
 
@@ -35,7 +24,7 @@ const getApiComments = () => {
                 };
             })
             comment = appComments;
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+            renderComments({ comment, initEventListeners });
         })
         .catch((error) => {
             if (error.message === 'Failed to fetch') {
@@ -49,7 +38,13 @@ const getApiComments = () => {
 let comment = [];
 
 getApiComments();
-renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+renderComments({ comment, initEventListeners });
+
+const loginPageLink = document.querySelector(".login-page-link");
+const nameInput = document.querySelector(".add-form-name");
+const commentInput = document.querySelector(".add-form-text");
+const addForm = document.querySelector(".add-form");
+let quoteGlobal = "";
 
 //Добавление комментариев в API
 const pushApiComment = () => {
@@ -71,8 +66,8 @@ const pushApiComment = () => {
     pushComment({ safeNameInputValue, safeCommentInputValue })
         .then(() => {
             getApiComments();
-            initEventListeners({ comment, renderComments, comments, comment, quoteGlobal, commentInput, nameInput, addButtonElement });
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+            initEventListeners({ comment, renderComments });
+            renderComments({ comment, initEventListeners });
         })
         .then(() => {
             quoteGlobal = '';
@@ -90,21 +85,23 @@ const pushApiComment = () => {
 }
 
 // Обработчик на кнопке 'Написать'
+const addButtonElement = document.querySelector(".add-form-button");
 addButtonElement.addEventListener('click', function () {
-    inputsOnPush({ addButtonElement, nameInput, commentInput, pushApiComment });
+    inputsOnPush({ pushApiComment });
 });
 
 // Срабатывание кнопки 'Написать' при клике на Enter
 document.addEventListener('keyup', function (enter) {
     if (enter.keyCode === 13) {
-        inputsOnPush({ addButtonElement, nameInput, commentInput, pushApiComment });
+        inputsOnPush({ pushApiComment });
     }
 });
 
 // Удаление последнего комментария
+const deleteButtonElement = document.querySelector(".delete-form-button");
 deleteButtonElement.addEventListener('click', () => {
     const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
-    renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+    renderComments({ comment, initEventListeners });
 });
 
 // Обработчик на ссылке авторизации

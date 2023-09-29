@@ -1,4 +1,4 @@
-export const initEventListeners = ({ comment, renderComments, comments, quoteGlobal, commentInput, nameInput, addButtonElement }) => {
+export const initEventListeners = ({ comment, renderComments }) => {
     const likeButtonElement = document.querySelectorAll('.like-button');
     for (const item of likeButtonElement) {
         item.addEventListener('click', (event) => {
@@ -11,7 +11,7 @@ export const initEventListeners = ({ comment, renderComments, comments, quoteGlo
                 comment[index].isLiked = true;
                 comment[index].likes++;
             }
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+            renderComments({ comment, initEventListeners });
         });
     };
 };
