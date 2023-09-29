@@ -35,9 +35,23 @@ export const renderComments = ({ comment, initEventListeners }) => {
       </li>`;
         })
         .join('');
-    const comments = document.querySelector(".comments");
-    comments.innerHTML = commentsHTML;
 
+    const listHTML = `
+        <ul class="comments">${commentsHTML}</ul>
+        <span class="login-page-text">Чтобы добавить комментарий,<br> нужно <a class="login-page-link"
+            href="#">авторизоваться</a></span>
+        <div class="add-form">
+          <input type="text" class="add-form-name" placeholder="Введите ваше имя" />
+          <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+          <div class="add-form-row">
+            <button class="add-form-button">Написать</button>
+            <button class="delete-form-button">Удалить</button>
+          </div>
+        </div>
+        `;
+    app.innerHTML = listHTML;
+
+    const comments = document.querySelector(".comments");
     const addButtonElement = document.querySelector(".add-form-button");
     const nameInput = document.querySelector(".add-form-name");
     const commentInput = document.querySelector(".add-form-text");
