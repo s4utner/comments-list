@@ -26,18 +26,19 @@ export const renderLoginPage = () => {
     const loginInput = document.querySelector(".login-form-login");
     const passwordInput = document.querySelector(".login-form-password");
 
-    const safeLoginInputValue = loginInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
-    const safePasswordInputValue = passwordInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
     const signInButton = document.querySelector(".login-form-button");
     signInButton.addEventListener('click', () => {
+
+        const safeLoginInputValue = loginInput.value
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+
+        const safePasswordInputValue = passwordInput.value
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+
         signInButton.disabled = false;
         signInButton.classList.remove('disabled');
 
@@ -48,6 +49,10 @@ export const renderLoginPage = () => {
             return;
         } else {
             signIn(safeLoginInputValue, safePasswordInputValue);
+            console.log("Авторизация выполнена успешно");
+            loginInput.value === '';
+            passwordInput.value === '';
+            signInButton.disabled = true;
         }
     })
 };
@@ -79,23 +84,24 @@ export const renderRegistrationPage = () => {
     const loginInput = document.querySelector(".login-form-login");
     const passwordInput = document.querySelector(".login-form-password");
 
-    const safeNameInputValue = nameInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
-    const safeLoginInputValue = loginInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
-    const safePasswordInputValue = passwordInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
     const registrationButton = document.querySelector(".login-form-button");
     registrationButton.addEventListener('click', () => {
+
+        const safeNameInputValue = nameInput.value
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+
+        const safeLoginInputValue = loginInput.value
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+
+        const safePasswordInputValue = passwordInput.value
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;");
+
         registrationButton.disabled = false;
         registrationButton.classList.remove('disabled');
 
@@ -106,6 +112,10 @@ export const renderRegistrationPage = () => {
             return;
         } else {
             registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue);
+            console.log("Регистрация выполнена успешно");
+            nameInput.value === '';
+            loginInput.value === '';
+            passwordInput.value === '';
         }
     })
 };
