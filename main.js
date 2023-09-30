@@ -1,15 +1,15 @@
 import { getComments, pushComment } from "./api.js";
 import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
-import { inputsOnPush } from "./inputsOnPush.js";
 import { initEventListeners } from "./like.js";
-import { renderLoginPage } from "./loginPage.js";
-import { app } from "./renderComments.js";
+
+export const app = document.querySelector(".app");
+export let comment = [];
 
 const getApiComments = () => {
 
-    //app.innerHTML = `<div class="loader-text">Подождите, комментарии загружаются...</div>
-    //<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
+    app.innerHTML = `<div class="loader-text">Подождите, комментарии загружаются...</div>
+    <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
 
     getComments()
         .then((responseData) => {
@@ -24,7 +24,7 @@ const getApiComments = () => {
                 };
             })
             comment = appComments;
-            renderComments({ comment, initEventListeners });
+            renderComments({ initEventListeners });
         })
         .catch((error) => {
             if (error.message === 'Failed to fetch') {
@@ -35,22 +35,19 @@ const getApiComments = () => {
         })
 };
 
-let comment = [];
-
 getApiComments();
-renderComments({ comment, initEventListeners });
+renderComments({ initEventListeners });
 
-const loginPageLink = document.querySelector(".login-page-link");
 const nameInput = document.querySelector(".add-form-name");
 const commentInput = document.querySelector(".add-form-text");
 const addForm = document.querySelector(".add-form");
 let quoteGlobal = "";
 
 //Добавление комментариев в API
-const pushApiComment = () => {
+export const pushApiComment = () => {
 
-    //addForm.innerHTML = `<div class="loader-text">Подождите, комментарий загружается...</div>
-    //<div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
+    addForm.innerHTML = `<div class="loader-text">Подождите, комментарий добавляется...</div>
+    <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
 
     const safeNameInputValue = nameInput.value
         .replaceAll("<", "&lt;")
@@ -66,8 +63,8 @@ const pushApiComment = () => {
     pushComment({ safeNameInputValue, safeCommentInputValue })
         .then(() => {
             getApiComments();
-            initEventListeners({ comment, renderComments });
-            renderComments({ comment, initEventListeners });
+            initEventListeners({ renderComments });
+            renderComments({ initEventListeners });
         })
         .then(() => {
             quoteGlobal = '';
@@ -83,30 +80,5 @@ const pushApiComment = () => {
             }
         });
 }
-
-// Обработчик на кнопке 'Написать'
-const addButtonElement = document.querySelector(".add-form-button");
-addButtonElement.addEventListener('click', function () {
-    inputsOnPush({ pushApiComment });
-});
-
-// Срабатывание кнопки 'Написать' при клике на Enter
-document.addEventListener('keyup', function (enter) {
-    if (enter.keyCode === 13) {
-        inputsOnPush({ pushApiComment });
-    }
-});
-
-// Удаление последнего комментария
-const deleteButtonElement = document.querySelector(".delete-form-button");
-deleteButtonElement.addEventListener('click', () => {
-    const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
-    renderComments({ comment, initEventListeners });
-});
-
-// Обработчик на ссылке авторизации
-loginPageLink.addEventListener("click", () => {
-    renderLoginPage();
-});
 
 console.log("It works!");

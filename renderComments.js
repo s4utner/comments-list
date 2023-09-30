@@ -1,6 +1,9 @@
-export const app = document.querySelector(".app");
+import { inputsOnPush } from "./inputsOnPush.js";
+import { pushApiComment } from "./main.js";
+import { renderLoginPage } from "./loginPage.js";
+import { comment, app } from "./main.js";
 
-export const renderComments = ({ comment, initEventListeners }) => {
+export const renderComments = ({ initEventListeners }) => {
     const commentsHTML = comment
         .map((comment, index) => {
             return `<li class="comment" data-index="${index}">
@@ -51,10 +54,35 @@ export const renderComments = ({ comment, initEventListeners }) => {
         `;
     app.innerHTML = listHTML;
 
+    const loginPageLink = document.querySelector(".login-page-link");
     const comments = document.querySelector(".comments");
     const addButtonElement = document.querySelector(".add-form-button");
     const nameInput = document.querySelector(".add-form-name");
     const commentInput = document.querySelector(".add-form-text");
+
+    // Обработчик на кнопке 'Написать'
+    addButtonElement.addEventListener('click', function () {
+        inputsOnPush({ pushApiComment });
+    });
+
+    // Срабатывание кнопки 'Написать' при клике на Enter
+    document.addEventListener('keyup', function (enter) {
+        if (enter.keyCode === 13) {
+            inputsOnPush({ pushApiComment });
+        }
+    });
+
+    // Удаление последнего комментария
+    const deleteButtonElement = document.querySelector(".delete-form-button");
+    deleteButtonElement.addEventListener('click', () => {
+        const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
+        renderComments({ initEventListeners });
+    });
+
+    // Обработчик на ссылке авторизации
+    loginPageLink.addEventListener("click", () => {
+        renderLoginPage();
+    });
 
     //Редактировать комментарий
     const editButtonElements = document.querySelectorAll('.edit-form-button');
@@ -67,7 +95,7 @@ export const renderComments = ({ comment, initEventListeners }) => {
             const editComment = comment[index];
             editComment.isEdit = true;
 
-            renderComments({ comment, initEventListeners });
+            renderComments({ initEventListeners });
 
             document.querySelector(".add-form-text").focus();
         });
@@ -83,7 +111,7 @@ export const renderComments = ({ comment, initEventListeners }) => {
             saveComment.text = editFormText.value;
 
             saveComment.isEdit = false;
-            renderComments({ comment, initEventListeners });
+            renderComments({ initEventListeners });
         });
     }
 
@@ -112,5 +140,5 @@ export const renderComments = ({ comment, initEventListeners }) => {
         });
     };
 
-    initEventListeners({ comment, renderComments, comment });
+    initEventListeners({ renderComments });
 };

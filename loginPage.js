@@ -1,5 +1,7 @@
-import { app } from "./renderComments.js";
+import { app } from "./main.js";
 import { registration, signIn } from "./api.js";
+import { renderComments } from "./renderComments.js";
+import { initEventListeners } from "./like.js";
 
 export const renderLoginPage = () => {
     const loginHTML = `
@@ -50,9 +52,7 @@ export const renderLoginPage = () => {
         } else {
             signIn(safeLoginInputValue, safePasswordInputValue);
             console.log("Авторизация выполнена успешно");
-            loginInput.value === '';
-            passwordInput.value === '';
-            signInButton.disabled = true;
+            renderComments({ initEventListeners });
         }
     })
 };
