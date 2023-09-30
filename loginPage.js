@@ -1,6 +1,6 @@
 import { app } from "./main.js";
-import { registration, signIn } from "./api.js";
-import { renderComments } from "./renderComments.js";
+import { registration, signIn, token, setToken } from "./api.js";
+import { renderComments, setCommentName } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
 
 export const renderLoginPage = () => {
@@ -50,11 +50,47 @@ export const renderLoginPage = () => {
             alert('Все поля ввода должны быть заполнены');
             return;
         } else {
-            signIn(safeLoginInputValue, safePasswordInputValue);
-            console.log("Авторизация выполнена успешно");
-            renderComments({ initEventListeners });
+            signIn(safeLoginInputValue, safePasswordInputValue)
+                .then((responseData) => {
+                    setCommentName(responseData.user.name);
+                    setToken(responseData.user.token);
+                    renderComments({ initEventListeners });
+                })
         }
-    })
+    });
+
+    // Срабатывание кнопки 'Вход' при клике на Enter
+    document.addEventListener('keyup', function (enter) {
+        if (enter.keyCode === 13) {
+
+            const safeLoginInputValue = loginInput.value
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;");
+
+            const safePasswordInputValue = passwordInput.value
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;");
+
+            signInButton.disabled = false;
+            signInButton.classList.remove('disabled');
+
+            if (safeLoginInputValue === '' || safePasswordInputValue === '') {
+                signInButton.classList.add('disabled');
+                signInButton.disabled = true;
+                alert('Все поля ввода должны быть заполнены');
+                return;
+            } else {
+                signIn(safeLoginInputValue, safePasswordInputValue)
+                    .then((responseData) => {
+                        setCommentName(responseData.user.name);
+                        setToken(responseData.user.token);
+                        renderComments({ initEventListeners });
+                    })
+            }
+        }
+    });
 };
 
 export const renderRegistrationPage = () => {
@@ -111,11 +147,50 @@ export const renderRegistrationPage = () => {
             alert('Все поля ввода должны быть заполнены');
             return;
         } else {
-            registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue);
-            console.log("Регистрация выполнена успешно");
-            nameInput.value === '';
-            loginInput.value === '';
-            passwordInput.value === '';
+            registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue)
+                .then((responseData) => {
+                    setCommentName(responseData.user.name);
+                    setToken(responseData.user.token);
+                    renderComments({ initEventListeners });
+                })
         }
-    })
+    });
+
+    // Срабатывание кнопки 'Зарегистрироваться' при клике на Enter
+    document.addEventListener('keyup', function (enter) {
+        if (enter.keyCode === 13) {
+
+            const safeNameInputValue = nameInput.value
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;");
+
+            const safeLoginInputValue = loginInput.value
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;");
+
+            const safePasswordInputValue = passwordInput.value
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;");
+
+            registrationButton.disabled = false;
+            registrationButton.classList.remove('disabled');
+
+            if (safeNameInputValue === '' || safeLoginInputValue === '' || safePasswordInputValue === '') {
+                registrationButton.classList.add('disabled');
+                registrationButton.disabled = true;
+                alert('Все поля ввода должны быть заполнены');
+                return;
+            } else {
+                registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue)
+                    .then((responseData) => {
+                        setCommentName(responseData.user.name);
+                        setToken(responseData.user.token);
+                        renderComments({ initEventListeners });
+                    })
+            }
+        }
+    });
 };

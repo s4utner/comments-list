@@ -6,6 +6,7 @@ import { initEventListeners } from "./like.js";
 export const app = document.querySelector(".app");
 export let comment = [];
 
+//Получение комментариев из API
 const getApiComments = () => {
 
     app.innerHTML = `<div class="loader-text">Подождите, комментарии загружаются...</div>
@@ -41,7 +42,7 @@ renderComments({ initEventListeners });
 const nameInput = document.querySelector(".add-form-name");
 const commentInput = document.querySelector(".add-form-text");
 const addForm = document.querySelector(".add-form");
-let quoteGlobal = "";
+export let quoteGlobal = "";
 
 //Добавление комментариев в API
 export const pushApiComment = () => {
@@ -49,18 +50,7 @@ export const pushApiComment = () => {
     addForm.innerHTML = `<div class="loader-text">Подождите, комментарий добавляется...</div>
     <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
 
-    const safeNameInputValue = nameInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
-    const safeCommentInputValue = commentInput.value
-        .replace(`"${quoteGlobal}"\n`, '')
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
-    pushComment({ safeNameInputValue, safeCommentInputValue })
+    pushComment()
         .then(() => {
             getApiComments();
             initEventListeners({ renderComments });
@@ -72,6 +62,7 @@ export const pushApiComment = () => {
             commentInput.value = '';
         })
         .catch((error) => {
+            const addButtonElement = document.querySelector(".add-form-button");
             addButtonElement.disabled = false;
             if (error.message === 'Failed to fetch') {
                 alert('Кажется, соединение с интернетом потеряно. Проверь настройки');
