@@ -357,6 +357,7 @@ body {
 
   .login-page-text,
   .login-page-link {
+    padding-bottom: 72px;
     font-size: 24px;
     font-family: Helvetica;
     color: #fff;

@@ -2,58 +2,11 @@ import { inputsOnPush } from "./inputsOnPush.js";
 import { pushApiComment } from "./main.js";
 import { renderLoginPage } from "./loginPage.js";
 import { comment, app } from "./main.js";
+import { token } from "./api.js";
 
 let commentName;
 export const setCommentName = (newName) => {
     commentName = newName;
-};
-
-export const firstRender = () => {
-    const commentsHTML = comment
-        .map((comment, index) => {
-            return `<li class="comment" data-index="${index}">
-        <div class="comment-header">
-          <div>${comment.name}</div>
-          <div class="date">${comment.date}</div>
-        </div>
-        ${comment.quote
-                    ? `<div
-                      class="quote-form-text"
-                      rows="2"
-                      >${comment.quote}</div>`
-                    : ``
-                }
-        ${comment.isEdit
-                    ? `<textarea
-                      class="add-form-text"
-                      rows="2"
-                    >${comment.text}</textarea>`
-                    : `<div class="comment-body"><div class="comment-text" data-index="${index}">${comment.text}</div></div>`
-                }
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">${comment.likes}</span>
-            <button class="like-button ${comment.isLiked ? '-active-like' : ''}" data-index="${index}"></button>
-          </div>
-        </div>
-      </li>`;
-        })
-        .join('');
-
-    const listHTML = `
-        <ul class="comments">${commentsHTML}</ul>
-        <span class="login-page-text">Чтобы добавить комментарий,<br> нужно <a class="login-page-link"
-            href="#">авторизоваться</a></span>
-        `;
-    app.innerHTML = listHTML;
-
-    const loginPageLink = document.querySelector(".login-page-link");
-    const comments = document.querySelector(".comments");
-
-    // Обработчик на ссылке авторизации
-    loginPageLink.addEventListener("click", () => {
-        renderLoginPage();
-    });
 };
 
 export const renderComments = ({ initEventListeners }) => {
@@ -94,16 +47,17 @@ export const renderComments = ({ initEventListeners }) => {
 
     const listHTML = `
         <ul class="comments">${commentsHTML}</ul>
-        <span class="login-page-text">Чтобы добавить комментарий,<br> нужно <a class="login-page-link"
-            href="#">авторизоваться</a></span>
-        <div class="add-form">
-          <input type="text" class="add-form-name disabled" value="${commentName}" readonly />
-          <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
-          <div class="add-form-row">
-            <button class="add-form-button">Написать</button>
-            <button class="delete-form-button">Удалить</button>
-          </div>
+        ${token
+            ? `<div class="add-form">
+        <input type="text" class="add-form-name disabled" value="${commentName}" readonly />
+        <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
+        <div class="add-form-row">
+          <button class="add-form-button">Написать</button>
+          <button class="delete-form-button">Удалить</button>
         </div>
+      </div>`
+            : `<span class="login-page-text">Чтобы добавить комментарий,<br> нужно <a class="login-page-link"
+      href="#">авторизоваться</a></span>`}
         `;
     app.innerHTML = listHTML;
 
