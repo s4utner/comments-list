@@ -2,12 +2,12 @@ import { getComments, pushComment, setToken, token } from "./api.js";
 import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
-import { myStorage } from "./loginPage.js";
 
 export const app = document.querySelector(".app");
 export let comment = [];
-setToken(myStorage.getItem(token));
+export const myStorage = localStorage;
 const loader = document.querySelector(".loader");
+setToken(myStorage.getItem(token));
 
 //Получение комментариев из API
 const getApiComments = () => {
