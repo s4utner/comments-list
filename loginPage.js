@@ -3,6 +3,8 @@ import { registration, signIn, token, setToken } from "./api.js";
 import { renderComments, setCommentName } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
 
+export const myStorage = localStorage;
+
 export const renderLoginPage = () => {
     const loginHTML = `
     <div class="breadcrumbs">
@@ -28,6 +30,16 @@ export const renderLoginPage = () => {
     const loginInput = document.querySelector(".login-form-login");
     const passwordInput = document.querySelector(".login-form-password");
 
+    loginInput.addEventListener('input', () => {
+        loginInput.classList.remove('error');
+        signInButton.disabled = false;
+    });
+
+    passwordInput.addEventListener('input', () => {
+        passwordInput.classList.remove('error');
+        signInButton.disabled = false;
+    });
+
     const signInButton = document.querySelector(".login-form-button");
     signInButton.addEventListener('click', () => {
 
@@ -48,19 +60,29 @@ export const renderLoginPage = () => {
             signInButton.classList.add('disabled');
             signInButton.disabled = true;
             alert('Все поля ввода должны быть заполнены');
+
+            if (loginInput.value === '') {
+                loginInput.classList.add('error');
+            };
+            if (passwordInput.value === '') {
+                passwordInput.classList.add('error');
+            };
+
             return;
-        } else {
-            signIn(safeLoginInputValue, safePasswordInputValue)
-                .then((responseData) => {
-                    setCommentName(responseData.user.name);
-                    setToken(responseData.user.token);
-                    renderComments({ initEventListeners });
-                })
-        }
+        };
+
+        signIn(safeLoginInputValue, safePasswordInputValue)
+            .then((responseData) => {
+                setCommentName(responseData.user.name);
+                setToken(responseData.user.token);
+                myStorage.setItem(token, token);
+                renderComments({ initEventListeners });
+            });
     });
 
     // Срабатывание кнопки 'Вход' при клике на Enter
-    document.addEventListener('keyup', function (enter) {
+    const loginForm = document.querySelector(".login-form");
+    loginForm.addEventListener('keyup', function (enter) {
         if (enter.keyCode === 13) {
 
             const safeLoginInputValue = loginInput.value
@@ -80,15 +102,24 @@ export const renderLoginPage = () => {
                 signInButton.classList.add('disabled');
                 signInButton.disabled = true;
                 alert('Все поля ввода должны быть заполнены');
+
+                if (loginInput.value === '') {
+                    loginInput.classList.add('error');
+                };
+                if (passwordInput.value === '') {
+                    passwordInput.classList.add('error');
+                };
+
                 return;
-            } else {
-                signIn(safeLoginInputValue, safePasswordInputValue)
-                    .then((responseData) => {
-                        setCommentName(responseData.user.name);
-                        setToken(responseData.user.token);
-                        renderComments({ initEventListeners });
-                    })
-            }
+            };
+
+            signIn(safeLoginInputValue, safePasswordInputValue)
+                .then((responseData) => {
+                    setCommentName(responseData.user.name);
+                    setToken(responseData.user.token);
+                    myStorage.setItem(token, token);
+                    renderComments({ initEventListeners });
+                });
         }
     });
 };
@@ -120,6 +151,21 @@ export const renderRegistrationPage = () => {
     const loginInput = document.querySelector(".login-form-login");
     const passwordInput = document.querySelector(".login-form-password");
 
+    nameInput.addEventListener('input', () => {
+        nameInput.classList.remove('error');
+        registrationButton.disabled = false;
+    });
+
+    loginInput.addEventListener('input', () => {
+        loginInput.classList.remove('error');
+        registrationButton.disabled = false;
+    });
+
+    passwordInput.addEventListener('input', () => {
+        passwordInput.classList.remove('error');
+        registrationButton.disabled = false;
+    });
+
     const registrationButton = document.querySelector(".login-form-button");
     registrationButton.addEventListener('click', () => {
 
@@ -145,19 +191,33 @@ export const renderRegistrationPage = () => {
             registrationButton.classList.add('disabled');
             registrationButton.disabled = true;
             alert('Все поля ввода должны быть заполнены');
+
+            if (nameInput.value === '') {
+                nameInput.classList.add('error');
+            };
+            if (loginInput.value === '') {
+                loginInput.classList.add('error');
+            };
+            if (passwordInput.value === '') {
+                passwordInput.classList.add('error');
+            };
+
             return;
-        } else {
-            registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue)
-                .then((responseData) => {
-                    setCommentName(responseData.user.name);
-                    setToken(responseData.user.token);
-                    renderComments({ initEventListeners });
-                })
-        }
+        };
+
+        registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue)
+            .then((responseData) => {
+                setCommentName(responseData.user.name);
+                setToken(responseData.user.token);
+                myStorage.setItem(token, token);
+                renderComments({ initEventListeners });
+            });
+
     });
 
     // Срабатывание кнопки 'Зарегистрироваться' при клике на Enter
-    document.addEventListener('keyup', function (enter) {
+    const loginForm = document.querySelector(".login-form");
+    loginForm.addEventListener('keyup', function (enter) {
         if (enter.keyCode === 13) {
 
             const safeNameInputValue = nameInput.value
@@ -182,15 +242,27 @@ export const renderRegistrationPage = () => {
                 registrationButton.classList.add('disabled');
                 registrationButton.disabled = true;
                 alert('Все поля ввода должны быть заполнены');
+
+                if (nameInput.value === '') {
+                    nameInput.classList.add('error');
+                };
+                if (loginInput.value === '') {
+                    loginInput.classList.add('error');
+                };
+                if (passwordInput.value === '') {
+                    passwordInput.classList.add('error');
+                };
+
                 return;
-            } else {
-                registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue)
-                    .then((responseData) => {
-                        setCommentName(responseData.user.name);
-                        setToken(responseData.user.token);
-                        renderComments({ initEventListeners });
-                    })
-            }
+            };
+
+            registration(safeNameInputValue, safeLoginInputValue, safePasswordInputValue)
+                .then((responseData) => {
+                    setCommentName(responseData.user.name);
+                    setToken(responseData.user.token);
+                    myStorage.setItem(token, token);
+                    renderComments({ initEventListeners });
+                });
         }
     });
 };

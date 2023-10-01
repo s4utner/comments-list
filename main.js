@@ -1,17 +1,16 @@
-import { getComments, pushComment } from "./api.js";
+import { getComments, pushComment, setToken, token } from "./api.js";
 import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
+import { myStorage } from "./loginPage.js";
 
 export const app = document.querySelector(".app");
 export let comment = [];
+setToken(myStorage.getItem(token));
+const loader = document.querySelector(".loader");
 
 //Получение комментариев из API
 const getApiComments = () => {
-
-    app.innerHTML = `<div class="loader-text">Подождите, комментарии загружаются...</div>
-    <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
-
     getComments()
         .then((responseData) => {
             const appComments = responseData.comments.map((comment) => {
@@ -34,21 +33,25 @@ const getApiComments = () => {
                 alert(error.message);
             }
         })
+        .then(() => {
+            app.classList.remove("delete");
+            loader.classList.add("delete");
+        });
 };
 
 getApiComments();
 renderComments({ initEventListeners });
 
-const nameInput = document.querySelector(".add-form-name");
-const commentInput = document.querySelector(".add-form-text");
-const addForm = document.querySelector(".add-form");
 export let quoteGlobal = "";
 
 //Добавление комментариев в API
 export const pushApiComment = () => {
-
-    addForm.innerHTML = `<div class="loader-text">Подождите, комментарий добавляется...</div>
-    <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>`;
+    const nameInput = document.querySelector(".add-form-name");
+    const commentInput = document.querySelector(".add-form-text");
+    const addForm = document.querySelector(".add-form");
+    const commentLoader = document.querySelector(".comment-loader");
+    addForm.classList.add("delete");
+    commentLoader.classList.remove("delete");
 
     pushComment()
         .then(() => {
@@ -60,6 +63,8 @@ export const pushApiComment = () => {
             quoteGlobal = '';
             nameInput.value = '';
             commentInput.value = '';
+            addForm.classList.remove("delete");
+            commentLoader.classList.add("delete");
         })
         .catch((error) => {
             const addButtonElement = document.querySelector(".add-form-button");

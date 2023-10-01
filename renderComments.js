@@ -48,7 +48,14 @@ export const renderComments = ({ initEventListeners }) => {
     const listHTML = `
         <ul class="comments">${commentsHTML}</ul>
         ${token
-            ? `<div class="add-form">
+            ? `
+        <div class="comment-loader delete">
+            <div class="loader-text">Ваш комментарий добавляется...</div>
+            <div class="lds-roller">
+              <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+        <div class="add-form">
         <input type="text" class="add-form-name disabled" value="${commentName}" readonly />
         <textarea type="textarea" class="add-form-text" placeholder="Введите ваш коментарий" rows="4"></textarea>
         <div class="add-form-row">
@@ -57,7 +64,7 @@ export const renderComments = ({ initEventListeners }) => {
         </div>
       </div>`
             : `<span class="login-page-text">Чтобы добавить комментарий,<br> нужно <a class="login-page-link"
-      href="#">авторизоваться</a></span>`}
+    href="#">авторизоваться</a></span>`}    
         `;
     app.innerHTML = listHTML;
 
@@ -68,28 +75,39 @@ export const renderComments = ({ initEventListeners }) => {
     const commentInput = document.querySelector(".add-form-text");
 
     // Обработчик на кнопке 'Написать'
-    addButtonElement.addEventListener('click', function () {
-        inputsOnPush({ pushApiComment });
-    });
+    token
+        ? addButtonElement.addEventListener('click', function () {
+            inputsOnPush({ pushApiComment });
+        })
+        : ``;
 
     // Срабатывание кнопки 'Написать' при клике на Enter
-    document.addEventListener('keyup', function (enter) {
-        if (enter.keyCode === 13) {
-            inputsOnPush({ pushApiComment });
-        }
-    });
+    const addForm = document.querySelector(".add-form");
+    token
+        ? addForm.addEventListener('keyup', function (enter) {
+            if (enter.keyCode === 13) {
+                inputsOnPush({ pushApiComment });
+            }
+        })
+        : ``;
+
 
     // Удаление последнего комментария
     const deleteButtonElement = document.querySelector(".delete-form-button");
-    deleteButtonElement.addEventListener('click', () => {
-        const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
-        renderComments({ initEventListeners });
-    });
+    token
+        ? deleteButtonElement.addEventListener('click', () => {
+            const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
+            renderComments({ initEventListeners });
+        })
+        : ``;
 
     // Обработчик на ссылке авторизации
-    loginPageLink.addEventListener("click", () => {
-        renderLoginPage();
-    });
+    token
+        ? ``
+        : loginPageLink.addEventListener("click", () => {
+            renderLoginPage();
+        });
+
 
     //Редактировать комментарий
     const editButtonElements = document.querySelectorAll('.edit-form-button');
@@ -123,15 +141,18 @@ export const renderComments = ({ initEventListeners }) => {
     }
 
     // Блокировка кнопки
-    document.addEventListener("input", () => {
-        nameInput.value != "" && commentInput.value != ""
-            ? (addButtonElement.classList.remove('disabled'),
-                addButtonElement.disabled = false,
-                nameInput.classList.remove('error'),
-                commentInput.classList.remove('error'))
-            : (addButtonElement.classList.add('disabled'),
-                addButtonElement.disabled = true);
-    });
+    token
+        ? document.addEventListener("input", () => {
+            nameInput.value != "" && commentInput.value != ""
+                ? (addButtonElement.classList.remove('disabled'),
+                    addButtonElement.disabled = false,
+                    nameInput.classList.remove('error'),
+                    commentInput.classList.remove('error'))
+                : (addButtonElement.classList.add('disabled'),
+                    addButtonElement.disabled = true);
+        })
+        : ``;
+
 
     // Ответ на комменатрий
     const pushedComments = document.querySelectorAll('.comment-text');
@@ -143,7 +164,6 @@ export const renderComments = ({ initEventListeners }) => {
             const commentQuote = comment[index];
             quoteGlobal = `> ${commentQuote.name}:\n${commentQuote.text}`;
             commentInput.value = `"${quoteGlobal}"\n`;
-
         });
     };
 
