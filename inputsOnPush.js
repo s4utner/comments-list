@@ -1,4 +1,8 @@
-export const inputsOnPush = ({ addButtonElement, nameInput, commentInput, pushApiComment }) => {
+export const inputsOnPush = ({ pushApiComment }) => {
+    const addButtonElement = document.querySelector(".add-form-button");
+    const nameInput = document.querySelector(".add-form-name");
+    const commentInput = document.querySelector(".add-form-text");
+
     addButtonElement.disabled = false;
     addButtonElement.classList.remove('disabled');
     nameInput.classList.remove('error');

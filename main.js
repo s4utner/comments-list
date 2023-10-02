@@ -1,18 +1,15 @@
-import { getComments, pushComment } from "./api.js";
+import { getComments, pushComment, setToken, token } from "./api.js";
 import { date } from "./date.js";
 import { renderComments } from "./renderComments.js";
-import { inputsOnPush } from "./inputsOnPush.js";
 import { initEventListeners } from "./like.js";
 
-// Переменные
-const addButtonElement = document.querySelector(".add-form-button");
-const deleteButtonElement = document.querySelector(".delete-form-button");
-const comments = document.querySelector(".comments");
-const nameInput = document.querySelector(".add-form-name");
-const commentInput = document.querySelector(".add-form-text");
+export const app = document.querySelector(".app");
+export let comment = [];
+export const myStorage = localStorage;
+const loader = document.querySelector(".loader");
+setToken(myStorage.getItem(token));
 
-let quoteGlobal = "";
-
+//Получение комментариев из API
 const getApiComments = () => {
     getComments()
         .then((responseData) => {
@@ -27,7 +24,7 @@ const getApiComments = () => {
                 };
             })
             comment = appComments;
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+            renderComments({ initEventListeners });
         })
         .catch((error) => {
             if (error.message === 'Failed to fetch') {
@@ -36,38 +33,41 @@ const getApiComments = () => {
                 alert(error.message);
             }
         })
+        .then(() => {
+            app.classList.remove("delete");
+            loader.classList.add("delete");
+        });
 };
 
-let comment = [];
-
 getApiComments();
-renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+renderComments({ initEventListeners });
+
+export let quoteGlobal = "";
 
 //Добавление комментариев в API
-const pushApiComment = () => {
-    const safeNameInputValue = nameInput.value
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
+export const pushApiComment = () => {
+    const nameInput = document.querySelector(".add-form-name");
+    const commentInput = document.querySelector(".add-form-text");
+    const addForm = document.querySelector(".add-form");
+    const commentLoader = document.querySelector(".comment-loader");
+    addForm.classList.add("delete");
+    commentLoader.classList.remove("delete");
 
-    const safeCommentInputValue = commentInput.value
-        .replace(`"${quoteGlobal}"\n`, '')
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;");
-
-    pushComment({ safeNameInputValue, safeCommentInputValue })
+    pushComment()
         .then(() => {
             getApiComments();
-            initEventListeners({ comment, renderComments, comments, comment, quoteGlobal, commentInput, nameInput, addButtonElement });
-            renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
+            initEventListeners({ renderComments });
+            renderComments({ initEventListeners });
         })
         .then(() => {
             quoteGlobal = '';
             nameInput.value = '';
             commentInput.value = '';
+            addForm.classList.remove("delete");
+            commentLoader.classList.add("delete");
         })
         .catch((error) => {
+            const addButtonElement = document.querySelector(".add-form-button");
             addButtonElement.disabled = false;
             if (error.message === 'Failed to fetch') {
                 alert('Кажется, соединение с интернетом потеряно. Проверь настройки');
@@ -76,23 +76,5 @@ const pushApiComment = () => {
             }
         });
 }
-
-// Обработчик на кнопке 'Написать'
-addButtonElement.addEventListener('click', function () {
-    inputsOnPush({ addButtonElement, nameInput, commentInput, pushApiComment });
-});
-
-// Срабатывание кнопки 'Написать' при клике на Enter
-document.addEventListener('keyup', function (enter) {
-    if (enter.keyCode === 13) {
-        inputsOnPush({ addButtonElement, nameInput, commentInput, pushApiComment });
-    }
-});
-
-// Удаление последнего комментария
-deleteButtonElement.addEventListener('click', () => {
-    const askForDeleteComment = confirm('Вы уверены, что хотите удалить последний комментарий?') ? comment.pop() : '';
-    renderComments({ comment, comments, initEventListeners, quoteGlobal, commentInput, nameInput, addButtonElement });
-});
 
 console.log("It works!");
