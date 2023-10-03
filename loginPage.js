@@ -1,4 +1,4 @@
-import { app, myStorage } from "./main.js";
+import { app } from "./main.js";
 import { signIn, token, setToken } from "./api.js";
 import { renderComments, setCommentName } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
@@ -74,7 +74,6 @@ export const renderLoginPage = () => {
             .then((responseData) => {
                 setCommentName(responseData.user.name);
                 setToken(responseData.user.token);
-                myStorage.setItem(token, token);
                 renderComments({ initEventListeners });
             });
     });
@@ -116,7 +115,6 @@ export const renderLoginPage = () => {
                 .then((responseData) => {
                     setCommentName(responseData.user.name);
                     setToken(responseData.user.token);
-                    myStorage.setItem(token, token);
                     renderComments({ initEventListeners });
                 });
         }

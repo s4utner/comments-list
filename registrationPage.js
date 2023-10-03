@@ -89,7 +89,6 @@ export const renderRegistrationPage = () => {
             .then((responseData) => {
                 setCommentName(responseData.user.name);
                 setToken(responseData.user.token);
-                myStorage.setItem(token, token);
                 renderComments({ initEventListeners });
             });
 
@@ -140,7 +139,6 @@ export const renderRegistrationPage = () => {
                 .then((responseData) => {
                     setCommentName(responseData.user.name);
                     setToken(responseData.user.token);
-                    myStorage.setItem(token, token);
                     renderComments({ initEventListeners });
                 });
         }

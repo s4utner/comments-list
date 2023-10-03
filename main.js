@@ -1,23 +1,20 @@
-import { getComments, pushComment, setToken, token } from "./api.js";
-import { date } from "./date.js";
+import { getComments, pushComment, token } from "./api.js";
+import { format } from "date-fns";
 import { renderComments } from "./renderComments.js";
 import { initEventListeners } from "./like.js";
 
 export const app = document.querySelector(".app");
 export let comment = [];
-export const myStorage = localStorage;
 const loader = document.querySelector(".loader");
-setToken(myStorage.getItem(token));
 
 //Получение комментариев из API
 const getApiComments = () => {
     getComments()
         .then((responseData) => {
             const appComments = responseData.comments.map((comment) => {
-                const defaultDate = comment.date;
                 return {
                     name: comment.author.name,
-                    date: date({ defaultDate }),
+                    date: format(new Date(comment.date), "yyyy-MM-dd hh.mm.ss"),
                     text: comment.text,
                     likes: comment.likes,
                     isLiked: false,
